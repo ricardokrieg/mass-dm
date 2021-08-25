@@ -1,0 +1,9 @@
+extends ../layout
+
+block layout-content
+    div.View
+        h1.Banner Mass DM
+
+        ul
+            each campaign in campaigns
+              li= campaign.title

@@ -2,23 +2,24 @@
  * Required External Modules
  */
 
-const express = require("express");
-const path = require("path");
+const express = require("express")
+const path = require("path")
 
-const expressSession = require("express-session");
-const passport = require("passport");
-const Auth0Strategy = require("passport-auth0");
+const expressSession = require("express-session")
+const passport = require("passport")
+const Auth0Strategy = require("passport-auth0")
 
-require("dotenv").config();
+require("dotenv").config()
 
-const authRouter = require("./auth");
+const authRouter = require("./routers/auth")
+const massDMRouter = require("./routers/mass-dm")
 
 /**
  * App Variables
  */
 
-const app = express();
-const port = process.env.PORT || "8000";
+const app = express()
+const port = process.env.PORT || "8000"
 
 /**
  * Session Configuration
@@ -29,11 +30,11 @@ const session = {
   cookie: {},
   resave: false,
   saveUninitialized: false
-};
+}
 
 if (app.get("env") === "production") {
   // Serve secure cookies, requires HTTPS
-  session.cookie.secure = true;
+  session.cookie.secure = true
 }
 
 /**
@@ -56,38 +57,36 @@ const strategy = new Auth0Strategy(
      * extraParams.id_token has the JSON Web Token
      * profile has all the information from the user
      */
-    return done(null, profile);
+    return done(null, profile)
   }
-);
+)
 
 /**
  *  App Configuration
  */
 
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "pug");
-app.use(express.static(path.join(__dirname, "public")));
+app.set("views", path.join(__dirname, "views"))
+app.set("view engine", "pug")
+app.use(express.static(path.join(__dirname, "public")))
 
-app.use(expressSession(session));
+app.use(expressSession(session))
 
-passport.use(strategy);
-app.use(passport.initialize());
-app.use(passport.session());
+passport.use(strategy)
+app.use(passport.initialize())
+app.use(passport.session())
 
 passport.serializeUser((user, done) => {
-  done(null, user);
-});
+  done(null, user)
+})
 
 passport.deserializeUser((user, done) => {
-  done(null, user);
-});
+  done(null, user)
+})
 
 app.use((req, res, next) => {
-  res.locals.isAuthenticated = req.isAuthenticated();
-  next();
-});
-
-app.use("/", authRouter);
+  res.locals.isAuthenticated = req.isAuthenticated()
+  next()
+})
 
 /**
  * Routes Definitions
@@ -95,28 +94,31 @@ app.use("/", authRouter);
 
 const secured = (req, res, next) => {
   if (req.user) {
-    return next();
+    return next()
   }
-  req.session.returnTo = req.originalUrl;
-  res.redirect("/login");
-};
+  req.session.returnTo = req.originalUrl
+  res.redirect("/login")
+}
+
+app.use("/", authRouter)
+app.use("/mass-dm", secured, massDMRouter)
 
 app.get("/", (req, res) => {
-  res.render("index", { title: "Home" });
-});
+  res.render("index", { title: "Home" })
+})
 
-app.get("/user", secured, (req, res, next) => {
-  const { _raw, _json, ...userProfile } = req.user;
-  res.render("user", {
+app.get("/user", secured, (req, res, _next) => {
+  const { _raw, _json, ...userProfile } = req.user
+  res.render("auth/user", {
     title: "Profile",
     userProfile: userProfile
-  });
-});
+  })
+})
 
 /**
  * Server Activation
  */
 
 app.listen(port, () => {
-  console.log(`Listening to requests on http://localhost:${port}`);
-});
+  console.log(`Listening to requests on http://localhost:${port}`)
+})
