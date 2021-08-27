@@ -104,7 +104,7 @@ app.use("/", authRouter)
 app.use("/mass-dm", secured, massDMRouter)
 
 app.get("/", (req, res) => {
-  res.render("index", { title: "Home" })
+  res.render("index", { title: "Home", currentPage: "overview" })
 })
 
 app.get("/user", secured, (req, res, _next) => {

@@ -1,0 +1,33 @@
+div#sidebar
+  img(src="https://image.flaticon.com/icons/png/512/87/87390.png")#logo
+  ul
+    li(class=currentPage === 'overview' ? 'current' : '')
+      a
+        i.fa.fa-columns
+        .
+          Overview
+    li(class=currentPage === 'courses' ? 'current' : '')
+      a
+        i.fa.fa-bars
+        .
+          Courses
+    li(class=currentPage === 'calendar' ? 'current' : '')
+      a
+        i.far.fa-calendar
+        .
+          Calendar
+    li(class=currentPage === 'payments' ? 'current' : '')
+      a
+        i.far.fa-credit-card
+        .
+          Payments
+    li(class=currentPage === 'messages' ? 'current' : '')
+      a
+        i.far.fa-envelope
+        .
+          Messages
+    li
+      a
+        i.fa.fa-sign-out-alt
+        .
+          Log Out

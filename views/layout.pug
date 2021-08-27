@@ -1,13 +1,19 @@
 block variables
 doctype html
 html
-    head
-        meta(charset="utf-8")
-        link(rel="shortcut icon", href="/favicon.ico")
-        meta(name="viewport", content="width=device-width, initial-scale=1, shrink-to-fit=no")
-        meta(name="theme-color", content="#000000")
-        title #{title} | WHATABYTE
-        link(rel="stylesheet" href="/style.css")
-    body
-        div#root
-            block layout-content
+  head
+    meta(charset="utf-8")
+    link(rel="shortcut icon", href="/favicon.ico")
+    meta(name="viewport", content="width=device-width, initial-scale=1, shrink-to-fit=no")
+    meta(name="theme-color", content="#ffffff")
+    title #{title} | Marketing Agency
+    link(rel="stylesheet" href="/css/style.css")
+    link(rel="stylesheet" href="/css/sidebar.css")
+    link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css")
+  body
+    div#root
+      include includes/sidebar.pug
+      div#content
+        div#header User
+        div#main-content
+          block layout-content
