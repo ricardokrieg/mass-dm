@@ -1,16 +1,18 @@
-const {map, get} = require("lodash")
+const {map, get, isEmpty} = require("lodash")
 const AWS = require('aws-sdk')
+const chance = require('chance').Chance()
 
 AWS.config.loadFromPath('./aws_config.json')
 
-const list = async (userId) => {
+const dynamodb = new AWS.DynamoDB()
+
+const list = async (userId, status = null) => {
   const params = {
     TableName: "MKT_DMCAMPS",
     KeyConditionExpression: "USER_ID = :user_id",
     ExpressionAttributeValues: {":user_id": {S: userId}},
   }
 
-  const dynamodb = new AWS.DynamoDB()
   const response = await dynamodb.query(params).promise()
   console.log(JSON.stringify(response))
 
@@ -22,13 +24,33 @@ const list = async (userId) => {
   })
 }
 
-const build = () => {
-  return {
-    title: '',
+const create = async (userId, title) => {
+  if (isEmpty(userId) || isEmpty(title)) {
+    throw new Error(`Invalid params`)
   }
+
+  const campaign = {
+    uuid: chance.guid(),
+    title,
+  }
+
+  const params = {
+    Item: {
+      USER_ID: { S: userId },
+      CAMPAIGN_ID: { S: campaign.uuid },
+      TITLE: { S: campaign.title },
+    },
+    TableName: "MKT_DMCAMPS",
+  }
+
+  console.log(JSON.stringify(params))
+
+  await dynamodb.putItem(params).promise()
+
+  return campaign
 }
 
 module.exports = {
   list,
-  build,
+  create,
 }

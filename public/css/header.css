@@ -1,0 +1,12 @@
+#header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#header #search input {
+    border: none;
+    background: none;
+    border-bottom: 1px solid gray;
+    min-width: 200px;
+}

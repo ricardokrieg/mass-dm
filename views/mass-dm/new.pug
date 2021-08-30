@@ -2,4 +2,8 @@ extends ../layout
 
 block layout-content
     div.View
-        h1.Banner Create Mass DM Campaign
+        h1 Create Mass DM Campaign
+
+        form(action="/mass-dm/create", method="post")
+            input(type="text", placeholder="title", name="title")
+            input(type="submit")

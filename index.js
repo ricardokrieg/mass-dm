@@ -68,6 +68,7 @@ const strategy = new Auth0Strategy(
 app.set("views", path.join(__dirname, "views"))
 app.set("view engine", "pug")
 app.use(express.static(path.join(__dirname, "public")))
+app.use(express.urlencoded())
 
 app.use(expressSession(session))
 
@@ -85,6 +86,14 @@ passport.deserializeUser((user, done) => {
 
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.isAuthenticated()
+
+  if (req.isAuthenticated()) {
+    const { _raw, _json, ...userProfile } = req.user
+    res.locals.userProfile = userProfile
+  } else {
+    res.locals.userProfile = {}
+  }
+
   next()
 })
 
@@ -103,15 +112,16 @@ const secured = (req, res, next) => {
 app.use("/", authRouter)
 app.use("/mass-dm", secured, massDMRouter)
 
-app.get("/", (req, res) => {
-  res.render("index", { title: "Home", currentPage: "overview" })
+app.get("/", secured, (req, res) => {
+  res.render("index", {
+    title: "Overview",
+    currentPage: "overview"
+  })
 })
 
 app.get("/user", secured, (req, res, _next) => {
-  const { _raw, _json, ...userProfile } = req.user
   res.render("auth/user", {
-    title: "Profile",
-    userProfile: userProfile
+    title: "Profile"
   })
 })
 

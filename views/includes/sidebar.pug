@@ -2,32 +2,27 @@ div#sidebar
   img(src="https://image.flaticon.com/icons/png/512/87/87390.png")#logo
   ul
     li(class=currentPage === 'overview' ? 'current' : '')
-      a
+      a(href="/")
         i.fa.fa-columns
         .
           Overview
-    li(class=currentPage === 'courses' ? 'current' : '')
-      a
-        i.fa.fa-bars
+    li(class=currentPage === 'mass-dm' ? 'current' : '')
+      a(href="/mass-dm")
+        i.far.fa-envelope
         .
-          Courses
-    li(class=currentPage === 'calendar' ? 'current' : '')
-      a
-        i.far.fa-calendar
-        .
-          Calendar
+          Mass DM
     li(class=currentPage === 'payments' ? 'current' : '')
       a
         i.far.fa-credit-card
         .
           Payments
-    li(class=currentPage === 'messages' ? 'current' : '')
+    li(class=currentPage === 'support' ? 'current' : '')
       a
         i.far.fa-envelope
         .
-          Messages
+          Support
     li
-      a
+      a(href="/logout")
         i.fa.fa-sign-out-alt
         .
           Log Out

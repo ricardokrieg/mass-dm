@@ -9,11 +9,15 @@ html
     title #{title} | Marketing Agency
     link(rel="stylesheet" href="/css/style.css")
     link(rel="stylesheet" href="/css/sidebar.css")
+    link(rel="stylesheet" href="/css/header.css")
+    link(rel="stylesheet" href="/css/mass-dm.css")
     link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css")
   body
     div#root
       include includes/sidebar.pug
       div#content
-        div#header User
+        div#header
+          include includes/search.pug
+          include includes/user.pug
         div#main-content
           block layout-content

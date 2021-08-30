@@ -31,7 +31,7 @@
     font-weight: bold;
 }
 
-#sidebar ul li:nth-last-child(2) {
+#sidebar ul li:nth-last-child(4) {
     flex-grow: 1;
 }
 

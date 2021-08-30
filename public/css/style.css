@@ -59,6 +59,11 @@ a {
     flex-direction: row;
 }
 
+#content {
+    flex-grow: 1;
+    padding: 40px;
+}
+
 .View {
     flex: 1;
     display: flex;
@@ -70,8 +75,6 @@ a {
     width: 100%;
 
     padding: 20px;
-
-    background-size: cover;
 
     font-family: "Merriweather Sans", sans-serif;
 }
@@ -152,4 +155,31 @@ a {
     background: url("https://cdn.auth0.com/blog/whatabyte-portal/patio.jpeg") left
     bottom;
     background-size: cover;
+}
+
+ul.pills {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    align-items: flex-start;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul.pills li {
+    margin-left: 10px;
+}
+
+ul.pills li:first-child {
+    margin-left: 0;
+}
+
+ul.pills li i {
+    display: none;
+    color: #FD870A;
+}
+
+ul.pills li.current i {
+    display: inline;
 }
