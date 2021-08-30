@@ -16,8 +16,19 @@ router.get("/", async (req, res, _next) => {
   })
 })
 
+router.get("/pending", async (req, res, _next) => {
+  const campaigns = await campaignsService.list(req.user.id, "pending")
+
+  res.render("mass-dm/index", {
+    title: "Mass DM",
+    currentPage: "mass-dm",
+    currentDMTab: "pending",
+    campaigns,
+  })
+})
+
 router.get("/active", async (req, res, _next) => {
-  const campaigns = await campaignsService.list(req.user.id)
+  const campaigns = await campaignsService.list(req.user.id, "active")
 
   res.render("mass-dm/index", {
     title: "Mass DM",
@@ -28,7 +39,7 @@ router.get("/active", async (req, res, _next) => {
 })
 
 router.get("/completed", async (req, res, _next) => {
-  const campaigns = await campaignsService.list(req.user.id)
+  const campaigns = await campaignsService.list(req.user.id, "completed")
 
   res.render("mass-dm/index", {
     title: "Mass DM",

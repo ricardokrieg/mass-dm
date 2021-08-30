@@ -9,10 +9,19 @@ const dynamodb = new AWS.DynamoDB()
 const list = async (userId, status = null) => {
   const params = {
     TableName: "MKT_DMCAMPS",
+    ConsistentRead: false,
     KeyConditionExpression: "USER_ID = :user_id",
     ExpressionAttributeValues: {":user_id": {S: userId}},
   }
 
+  if (!isEmpty(status)) {
+    params['IndexName'] = "STATUS-index"
+    params['KeyConditionExpression'] = "USER_ID = :user_id and #STS = :status"
+    params['ExpressionAttributeNames'] = { "#STS": "STATUS" }
+    params['ExpressionAttributeValues'][":status"] = { S: status }
+  }
+
+  console.log(JSON.stringify(params))
   const response = await dynamodb.query(params).promise()
   console.log(JSON.stringify(response))
 
@@ -20,6 +29,7 @@ const list = async (userId, status = null) => {
     return {
       uuid: get(item.UUID, 'S', ''),
       title: get(item.TITLE, 'S', ''),
+      status: get(item.STATUS, 'S', 'pending'),
     }
   })
 }
@@ -32,13 +42,15 @@ const create = async (userId, title) => {
   const campaign = {
     uuid: chance.guid(),
     title,
+    status: `pending`,
   }
 
   const params = {
     Item: {
       USER_ID: { S: userId },
-      CAMPAIGN_ID: { S: campaign.uuid },
+      UUID: { S: campaign.uuid },
       TITLE: { S: campaign.title },
+      STATUS: { S: campaign.status },
     },
     TableName: "MKT_DMCAMPS",
   }

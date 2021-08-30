@@ -10,6 +10,11 @@ block layout-content
           i.fas.fa-xs.fa-circle
           .
             All
+      li(class=currentDMTab === 'pending' ? 'current' : '')
+        a(href="/mass-dm/pending")
+          i.fas.fa-xs.fa-circle
+          .
+            Pending
       li(class=currentDMTab === 'active' ? 'current' : '')
         a(href="/mass-dm/active")
           i.fas.fa-xs.fa-circle
