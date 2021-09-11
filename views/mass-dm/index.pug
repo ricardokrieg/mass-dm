@@ -28,4 +28,9 @@ block layout-content
 
     div.View
       each campaign in campaigns
-        div.campaign= campaign.title
+        div.campaign
+          div= campaign.title
+          div= campaign.message
+          div.footer
+            div= campaign.created_at
+            div= campaign.status

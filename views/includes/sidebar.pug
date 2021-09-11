@@ -3,26 +3,26 @@ div#sidebar
   ul
     li(class=currentPage === 'overview' ? 'current' : '')
       a(href="/")
-        i.fa.fa-columns
+        span.material-icons-outlined space_dashboard
         .
           Overview
     li(class=currentPage === 'mass-dm' ? 'current' : '')
       a(href="/mass-dm")
-        i.far.fa-envelope
+        span.material-icons-outlined mail
         .
           Mass DM
     li(class=currentPage === 'payments' ? 'current' : '')
       a
-        i.far.fa-credit-card
+        span.material-icons-outlined credit_card
         .
           Payments
     li(class=currentPage === 'support' ? 'current' : '')
       a
-        i.far.fa-envelope
+        span.material-icons-outlined question_answer
         .
           Support
     li
       a(href="/logout")
-        i.fa.fa-sign-out-alt
+        span.material-icons-outlined logout
         .
           Log Out

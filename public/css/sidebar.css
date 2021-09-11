@@ -43,6 +43,13 @@
     margin-right: 10px;
 }
 
-#sidebar ul li.current a i {
+#sidebar ul li.current a span {
     color: #FD870A;
+}
+
+#sidebar .material-icons-outlined {
+    vertical-align: bottom;
+    line-height: 22px !important;
+    font-size: 16px !important;
+    margin-right: 10px;
 }
