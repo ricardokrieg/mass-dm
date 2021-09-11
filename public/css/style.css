@@ -22,6 +22,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Noto Sans', sans-serif;
+    color: #4E5255;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
@@ -153,24 +154,22 @@ ul.pills {
     flex-direction: row;
     flex-grow: 1;
     align-items: flex-start;
+    justify-content: space-around;
     list-style-type: none;
     padding: 0;
     margin: 0;
+    width: 100%;
 }
 
-ul.pills li {
-    margin-left: 10px;
-}
-
-ul.pills li:first-child {
-    margin-left: 0;
-}
-
-ul.pills li i {
-    display: none;
+ul.pills li span {
+    opacity: 0;
     color: #FD870A;
+    font-size: 10px !important;
+    line-height: 22px !important;
+    vertical-align: bottom;
+    margin-right: 8px;
 }
 
-ul.pills li.current i {
-    display: inline;
+ul.pills li.current span {
+    opacity: 1;
 }

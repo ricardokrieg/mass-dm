@@ -57,13 +57,9 @@ router.get("/new", async (req, res, _next) => {
 })
 
 router.post("/create", async (req, res, _next) => {
-  const campaign = await campaignsService.create(req.user.id, req.body.title)
+  await campaignsService.create(req.user.id, req.body.title, req.body.message)
 
-  res.render("mass-dm/show", {
-    title: "Mass DM Campaign",
-    currentPage: "mass-dm",
-    campaign,
-  })
+  res.redirect("/mass-dm")
 })
 
 module.exports = router

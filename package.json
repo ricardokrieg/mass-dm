@@ -17,10 +17,12 @@
   "dependencies": {
     "aws-sdk": "^2.975.0",
     "chance": "^1.1.7",
+    "debug": "^4.3.2",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-session": "^1.17.2",
     "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "passport": "^0.4.1",
     "passport-auth0": "^1.4.0",
     "pug": "^3.0.2"

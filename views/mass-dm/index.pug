@@ -1,36 +1,41 @@
 extends ../layout
 
 block layout-content
-  div.View
-    h1 My Campaigns
-
-    ul.pills
-      li(class=currentDMTab === 'all' ? 'current' : '')
-        a(href="/mass-dm")
-          i.fas.fa-xs.fa-circle
-          .
-            All
-      li(class=currentDMTab === 'pending' ? 'current' : '')
-        a(href="/mass-dm/pending")
-          i.fas.fa-xs.fa-circle
-          .
-            Pending
-      li(class=currentDMTab === 'active' ? 'current' : '')
-        a(href="/mass-dm/active")
-          i.fas.fa-xs.fa-circle
-          .
-            Active
-      li(class=currentDMTab === 'completed' ? 'current' : '')
-        a(href="/mass-dm/completed")
-          i.fas.fa-xs.fa-circle
-          .
-            Completed
+  div.campaigns
+    div.header
+      h1 My Campaigns
+      a(href="/mass-dm/new") Create Campaign
 
     div.View
-      each campaign in campaigns
-        div.campaign
-          div= campaign.title
-          div= campaign.message
-          div.footer
-            div= campaign.created_at
-            div= campaign.status
+      ul.pills
+        li(class=currentDMTab === 'all' ? 'current' : '')
+          a(href="/mass-dm")
+            span.material-icons circle
+            .
+              All
+        li(class=currentDMTab === 'pending' ? 'current' : '')
+          a(href="/mass-dm/pending")
+            span.material-icons circle
+            .
+              Pending
+        li(class=currentDMTab === 'active' ? 'current' : '')
+          a(href="/mass-dm/active")
+            span.material-icons circle
+            .
+              Active
+        li(class=currentDMTab === 'completed' ? 'current' : '')
+          a(href="/mass-dm/completed")
+            span.material-icons circle
+            .
+              Completed
+
+      div.View
+        each campaign in campaigns
+          div.campaign
+            div.header
+              div.title= campaign.title
+              div= campaign.status
+            div.message= campaign.message
+            div.footer
+              div= campaign.created_at
+              button Details

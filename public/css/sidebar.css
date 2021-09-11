@@ -35,10 +35,6 @@
     flex-grow: 1;
 }
 
-#sidebar ul li a {
-    color: #4E5255;
-}
-
 #sidebar ul li a i {
     margin-right: 10px;
 }
