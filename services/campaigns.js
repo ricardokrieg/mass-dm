@@ -21,8 +21,8 @@ const list = async (userId, status = null) => {
 
   if (!isEmpty(status)) {
     params['IndexName'] = "STATUS-index"
-    params['KeyConditionExpression'] = "USER_ID = :user_id and #STS = :status"
-    params['ExpressionAttributeNames'] = { "#STS": "STATUS" }
+    params['KeyConditionExpression'] = "USER_ID = :user_id and #_STATUS = :status"
+    params['ExpressionAttributeNames'] = { "#_STATUS": "STATUS" }
     params['ExpressionAttributeValues'][":status"] = { S: status }
   }
 
@@ -31,6 +31,26 @@ const list = async (userId, status = null) => {
   debug(JSON.stringify(response))
 
   return map(response.Items, format)
+}
+
+const details = async (userId, uuid) => {
+  const params = {
+    TableName: table,
+    ConsistentRead: false,
+    KeyConditionExpression: "USER_ID = :user_id and #_UUID = :uuid",
+    ExpressionAttributeNames: { "#_UUID": "UUID" },
+    ExpressionAttributeValues: {
+      ":user_id": { S: userId },
+      ":uuid": { S: uuid },
+    },
+    Limit: 1,
+  }
+
+  debug(JSON.stringify(params))
+  const response = await dynamodb.query(params).promise()
+  debug(JSON.stringify(response))
+
+  return format(response.Items[0])
 }
 
 const create = async (userId, title, message) => {
@@ -76,5 +96,6 @@ const format = (campaign) => {
 
 module.exports = {
   list,
+  details,
   create,
 }

@@ -57,9 +57,19 @@ router.get("/new", async (req, res, _next) => {
 })
 
 router.post("/create", async (req, res, _next) => {
-  await campaignsService.create(req.user.id, req.body.title, req.body.message)
+  const campaign = await campaignsService.create(req.user.id, req.body.title, req.body.message)
 
-  res.redirect("/mass-dm")
+  res.redirect(`/${campaign.uuid}`)
+})
+
+router.get("/:uuid", async (req, res, _next) => {
+  const campaign = await campaignsService.details(req.user.id, req.params.uuid)
+
+  res.render("mass-dm/show", {
+    title: campaign.title,
+    currentPage: "mass-dm",
+    campaign,
+  })
 })
 
 module.exports = router

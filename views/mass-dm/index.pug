@@ -38,4 +38,4 @@ block layout-content
             div.message= campaign.message
             div.footer
               div= campaign.created_at
-              button Details
+              a(href=`/mass-dm/${campaign.uuid}`) Details
