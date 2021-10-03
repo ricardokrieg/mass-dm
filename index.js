@@ -3,6 +3,8 @@
  */
 
 const express = require("express")
+const jwt = require('express-jwt')
+const jwks = require('jwks-rsa')
 const path = require("path")
 
 const expressSession = require("express-session")
@@ -38,6 +40,22 @@ if (app.get("env") === "production") {
 }
 
 /**
+ * JWT Configuration
+ */
+
+const jwtCheck = jwt({
+  secret: jwks.expressJwtSecret({
+    cache: true,
+    rateLimit: true,
+    jwksRequestsPerMinute: 5,
+    jwksUri: 'https://dev-y6x2es3x.us.auth0.com/.well-known/jwks.json'
+  }),
+  audience: 'marketing-agency',
+  issuer: 'https://dev-y6x2es3x.us.auth0.com/',
+  algorithms: ['RS256']
+})
+
+/**
  * Passport Configuration
  */
 
@@ -71,6 +89,8 @@ app.use(express.static(path.join(__dirname, "public")))
 app.use(express.urlencoded())
 
 app.use(expressSession(session))
+
+app.use(jwtCheck)
 
 passport.use(strategy)
 app.use(passport.initialize())
@@ -123,6 +143,10 @@ app.get("/user", secured, (req, res, _next) => {
   res.render("auth/user", {
     title: "Profile"
   })
+})
+
+app.get("/foo", (req, res, _next) => {
+  res.json({ status: 'OK' })
 })
 
 /**
