@@ -4,14 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon ./index.js",
-    "ui": "browser-sync start --config bs-config.js"
+    "start": "nodemon ./index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "browser-sync": "^2.27.5",
     "nodemon": "^2.0.12"
   },
   "dependencies": {
@@ -24,9 +22,6 @@
     "express-session": "^1.17.2",
     "jwks-rsa": "^2.0.4",
     "lodash": "^4.17.21",
-    "moment": "^2.29.1",
-    "passport": "^0.4.1",
-    "passport-auth0": "^1.4.0",
-    "pug": "^3.0.2"
+    "moment": "^2.29.1"
   }
 }

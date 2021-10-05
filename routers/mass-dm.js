@@ -1,8 +1,6 @@
 const express = require("express")
 const router = express.Router()
 
-require("dotenv").config()
-
 const campaignsService = require("../services/campaigns")
 
 router.get("/", async (req, res, _next) => {
