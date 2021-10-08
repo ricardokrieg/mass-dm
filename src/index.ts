@@ -2,13 +2,14 @@
  * Required External Modules
  */
 
-const express = require("express")
-const jwt = require('express-jwt')
-const jwks = require('jwks-rsa')
+import express from 'express'
+import jwt from 'express-jwt'
+import jwks from 'jwks-rsa'
+import cors from 'cors'
 
 require("dotenv").config()
 
-const massDMRouter = require("./routers/mass-dm")
+import massDMRouter from "./routers/MassDM"
 
 /**
  * App Variables
@@ -39,6 +40,7 @@ const jwtCheck = jwt({
 
 app.use(express.urlencoded())
 app.use(jwtCheck)
+app.use(cors())
 
 /**
  * Routes Definitions
