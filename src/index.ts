@@ -55,3 +55,5 @@ app.use("/api/v1/mass-dm", massDMRouter)
 app.listen(port, () => {
   console.log(`Listening to requests on http://localhost:${port}`)
 })
+
+export default app
