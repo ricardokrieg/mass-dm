@@ -9,7 +9,7 @@ import cors from 'cors'
 
 require("dotenv").config()
 
-import massDMRouter from "./routers/MassDM"
+import campaignRouter from './Campaign/Campaign.router'
 
 /**
  * App Variables
@@ -46,7 +46,7 @@ app.use(cors())
  * Routes Definitions
  */
 
-app.use("/api/v1/mass-dm", massDMRouter)
+app.use("/api/v1/mass-dm/campaigns", campaignRouter)
 
 /**
  * Server Activation

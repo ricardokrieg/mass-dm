@@ -2,7 +2,7 @@ import express from "express"
 const router = express.Router()
 const debug = require('debug')('mkt:routers:mass-dm')
 
-import {list} from '../../services/MassDM/Campaign/CampaignService'
+import {list} from './Campaign.service'
 
 router.get('/', async (req, res, _next) => {
   // @ts-ignore

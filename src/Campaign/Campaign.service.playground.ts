@@ -1,7 +1,7 @@
 const debug = require('debug')('mkt:services:campaign:playground')
 
 import {CampaignStatus, ICreateParams, IDetailsParams, IListParams} from "./interfaces"
-import * as CampaignService from './CampaignService'
+import * as CampaignService from './Campaign.service'
 
 const create = async () => {
   const params: ICreateParams = {
