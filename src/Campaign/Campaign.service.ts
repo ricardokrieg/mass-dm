@@ -9,6 +9,7 @@ import {
   IDynamoDBCreateParams,
   IListParams,
 } from './interfaces'
+import {NotFoundError} from "./errors"
 
 const chance = require('chance').Chance()
 const debug = require('debug')('mkt:services:campaign')
@@ -60,7 +61,7 @@ export const details = async (params: IDetailsParams): Promise<ICampaign> => {
   debug(JSON.stringify(response))
 
   if (isEmpty(response.Items)) {
-    throw new Error(`Campaign not found`)
+    throw new NotFoundError()
   }
 
   return dynamoToCampaign(response.Items![0])

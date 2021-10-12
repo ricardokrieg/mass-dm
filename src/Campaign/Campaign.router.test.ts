@@ -1,5 +1,5 @@
 import request from 'supertest'
-import {map, isEqual, sortBy} from 'lodash'
+import {map, isEqual, sortBy, isEmpty} from 'lodash'
 
 import app from '../app'
 import {ICampaign} from './interfaces'
@@ -11,12 +11,33 @@ const auth = {
   "token_type": "Bearer",
 }
 const userId = 'auth0|61642dacfe39bb0069231886'
+const otherUserId = 'test|61642dacfe39bb0069231886'
 
 let campaigns: ICampaign[]
+let otherCampaigns: ICampaign[]
 
 describe('Campaign router', () => {
   beforeAll(async () => {
     campaigns = await CampaignService.list({ userId })
+    otherCampaigns = await CampaignService.list({ userId: otherUserId })
+
+    if (isEmpty(campaigns)) {
+      const campaign = await CampaignService.create({
+        userId,
+        title: 'Test Campaign',
+        messageSpintax: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      })
+      campaigns = [...campaigns, campaign]
+    }
+
+    if (isEmpty(otherCampaigns)) {
+      const campaign = await CampaignService.create({
+        userId: otherUserId,
+        title: 'Test Campaign',
+        messageSpintax: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      })
+      otherCampaigns = [...otherCampaigns, campaign]
+    }
   })
 
   describe('POST /campaigns', () => {
@@ -65,15 +86,27 @@ describe('Campaign router', () => {
           expect(isEqual(sortBy(map(response.body.data, 'uuid')), sortBy(map(campaigns, 'uuid')))).toBeTruthy()
         })
     })
+
+    it('should not list campaigns from other user', async () => {
+      return request(app)
+        .get(url)
+        .auth(auth.access_token, { type: 'bearer' })
+        .expect(200)
+        .then((response) => {
+          expect(response.type).toBe('application/json')
+
+          expect(map(response.body.data, 'uuid')).not.toContain(otherCampaigns[0].uuid)
+        })
+    })
   })
 
   describe('GET /campaigns/:id', () => {
-    let campaignId: string
     let url: string
+    let otherUrl: string
 
     beforeAll(async () => {
-      campaignId = campaigns[0].uuid
-      url = `/api/v1/mass-dm/campaigns/${campaignId}`
+      url = `/api/v1/mass-dm/campaigns/${campaigns[0].uuid}`
+      otherUrl = `/api/v1/mass-dm/campaigns/${otherCampaigns[0].uuid}`
     })
 
     it('should fail without access token', async () => {
@@ -92,6 +125,13 @@ describe('Campaign router', () => {
 
           expect(response.body.data.uuid).toEqual(campaigns[0].uuid)
         })
+    })
+
+    it('should not be able to get campaign from another user', async () => {
+      return request(app)
+        .get(otherUrl)
+        .auth(auth.access_token, { type: 'bearer' })
+        .expect(404)
     })
   })
 })
