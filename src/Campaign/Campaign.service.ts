@@ -130,5 +130,17 @@ const buildCampaign = (params: ICreateParams): ICampaign => {
 }
 
 const validateCreateParams = (params: ICreateParams): Error | null => {
+  if (isEmpty(params.userId)) {
+    return new Error('userId is required')
+  }
+
+  if (isEmpty(params.title)) {
+    return new Error('title is required')
+  }
+
+  if (isEmpty(params.messageSpintax)) {
+    return new Error('messageSpintax is required')
+  }
+
   return null
 }

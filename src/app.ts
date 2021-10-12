@@ -37,7 +37,7 @@ const jwtCheck = jwt({
  *  App Configuration
  */
 
-app.use(express.urlencoded())
+app.use(express.json())
 app.use(jwtCheck)
 app.use(cors())
 
