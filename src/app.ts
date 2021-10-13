@@ -7,8 +7,7 @@ import jwt from 'express-jwt'
 import jwks from 'jwks-rsa'
 import cors from 'cors'
 
-require("dotenv").config()
-
+import {default as config} from './config'
 import campaignRouter from './Campaign/Campaign.router'
 
 /**
@@ -26,10 +25,10 @@ const jwtCheck = jwt({
     cache: true,
     rateLimit: true,
     jwksRequestsPerMinute: 5,
-    jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`
+    jwksUri: `https://${config.auth0.domain}/.well-known/jwks.json`
   }),
-  audience: process.env.AUTH0_AUDIENCE,
-  issuer: `https://${process.env.AUTH0_DOMAIN}/`,
+  audience: config.auth0.audience,
+  issuer: `https://${config.auth0.domain}/`,
   algorithms: ['RS256']
 })
 

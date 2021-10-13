@@ -7,7 +7,7 @@ export interface ICampaign {
   messages: IMessage[],
   sources: ISource[],
   status: CampaignStatus,
-  timestamp: moment.Moment,
+  timestamp: number,
 }
 
 export interface IMessage {

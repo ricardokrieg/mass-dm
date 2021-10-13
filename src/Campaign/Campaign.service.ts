@@ -9,7 +9,8 @@ import {
   IDynamoDBCreateParams,
   IListParams,
 } from './interfaces'
-import {NotFoundError} from "./errors"
+import {MissingParamError, NotFoundError} from "./errors"
+import {default as config} from '../config'
 
 const chance = require('chance').Chance()
 const debug = require('debug')('mkt:services:campaign')
@@ -18,11 +19,9 @@ AWS.config.loadFromPath('./aws_config.json')
 
 const dynamodb = new AWS.DynamoDB()
 
-const table = 'MKT_DMCAMPS'
-
 export const list = async (params: IListParams): Promise<ICampaign[]> => {
   const dynamoDbParams: AWS.DynamoDB.Types.QueryInput = {
-    TableName: table,
+    TableName: config.tables.campaigns,
     ConsistentRead: false,
     KeyConditionExpression: 'USER_ID = :user_id',
     ExpressionAttributeValues: { ':user_id': { S: params.userId } },
@@ -45,7 +44,7 @@ export const list = async (params: IListParams): Promise<ICampaign[]> => {
 
 export const details = async (params: IDetailsParams): Promise<ICampaign> => {
   const dynamoDbParams = {
-    TableName: table,
+    TableName: config.tables.campaigns,
     ConsistentRead: false,
     KeyConditionExpression: "USER_ID = :user_id and #_UUID = :uuid",
     ExpressionAttributeNames: { "#_UUID": "UUID" },
@@ -68,10 +67,7 @@ export const details = async (params: IDetailsParams): Promise<ICampaign> => {
 }
 
 export const create = async (params: ICreateParams): Promise<ICampaign> => {
-  const error = validateCreateParams(params)
-  if (error !== null) {
-    throw error
-  }
+  validateCreateParams(params)
 
   const campaign = buildCampaign(params)
 
@@ -96,7 +92,7 @@ const dynamoToCampaign = (item: any): ICampaign => {
     }],
     sources: [],
     status: get(item.STATUS, 'S'),
-    timestamp: moment(parseInt(get(item.TIMESTAMP, 'N', ''))),
+    timestamp: parseInt(get(item.TIMESTAMP, 'N', '')),
   }
 }
 
@@ -108,9 +104,9 @@ const campaignToDynamo = (campaign: ICampaign): IDynamoDBCreateParams => {
       TITLE: { S: campaign.title },
       MESSAGE: { S: campaign.messages[0].spintax },
       STATUS: { S: campaign.status.toString() },
-      TIMESTAMP: { N: campaign.timestamp.format('x') },
+      TIMESTAMP: { N: campaign.timestamp.toString() },
     },
-    TableName: table,
+    TableName: config.tables.campaigns,
   }
 }
 
@@ -126,22 +122,20 @@ const buildCampaign = (params: ICreateParams): ICampaign => {
     }],
     sources: [],
     status: CampaignStatus.Draft,
-    timestamp: moment(),
+    timestamp: parseInt(moment().format('x')),
   }
 }
 
-const validateCreateParams = (params: ICreateParams): Error | null => {
+const validateCreateParams = (params: ICreateParams): void => {
   if (isEmpty(params.userId)) {
-    return new Error('userId is required')
+    throw new MissingParamError('userId is required')
   }
 
   if (isEmpty(params.title)) {
-    return new Error('title is required')
+    throw new MissingParamError('title is required')
   }
 
   if (isEmpty(params.messageSpintax)) {
-    return new Error('messageSpintax is required')
+    throw new MissingParamError('message spintax is required')
   }
-
-  return null
 }

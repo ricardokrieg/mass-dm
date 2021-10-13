@@ -3,3 +3,9 @@ export class NotFoundError extends Error {
     super("Campaign not found")
   }
 }
+
+export class MissingParamError extends Error {
+  constructor(message: string) {
+    super(message)
+  }
+}
