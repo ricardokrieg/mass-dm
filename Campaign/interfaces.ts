@@ -68,6 +68,11 @@ export interface ICreateParams {
   messageSpintax: string,
 }
 
+export interface IUpdateParams {
+  title: string,
+  messageSpintax: string,
+}
+
 interface IDynamoDBString {
   S: string,
 }

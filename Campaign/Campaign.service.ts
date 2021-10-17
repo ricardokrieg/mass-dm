@@ -7,7 +7,7 @@ import {
   ICreateParams,
   IDetailsParams,
   IDynamoDBCreateParams,
-  IListParams,
+  IListParams, IUpdateParams,
 } from './interfaces'
 import {MissingParamError, NotFoundError} from "./errors"
 import {default as config} from '../config'
@@ -24,7 +24,7 @@ export const list = async (params: IListParams): Promise<ICampaign[]> => {
     TableName: config.tables.campaigns,
     ConsistentRead: false,
     KeyConditionExpression: 'USER_ID = :user_id',
-    ExpressionAttributeValues: { ':user_id': { S: params.userId } },
+    ExpressionAttributeValues: { ':user_id': { S: paraams.userId } },
   }
 
   if (!isEmpty(params.status)) {
@@ -68,6 +68,20 @@ export const details = async (params: IDetailsParams): Promise<ICampaign> => {
 
 export const create = async (params: ICreateParams): Promise<ICampaign> => {
   validateCreateParams(params)
+
+  const campaign = buildCampaign(params)
+
+  const dynamoDbParams = campaignToDynamo(campaign);
+  debug(JSON.stringify(dynamoDbParams))
+
+  // @ts-ignore
+  await dynamodb.putItem(dynamoDbParams).promise()
+
+  return campaign
+}
+
+export const update = async (params: IUpdateParams): Promise<ICampaign> => {
+  validateUpdateParams(params)
 
   const campaign = buildCampaign(params)
 
@@ -131,6 +145,16 @@ const validateCreateParams = (params: ICreateParams): void => {
     throw new MissingParamError('userId is required')
   }
 
+  if (isEmpty(params.title)) {
+    throw new MissingParamError('title is required')
+  }
+
+  if (isEmpty(params.messageSpintax)) {
+    throw new MissingParamError('message spintax is required')
+  }
+}
+
+const validateUpdateParams = (params: IUpdateParams): void => {
   if (isEmpty(params.title)) {
     throw new MissingParamError('title is required')
   }

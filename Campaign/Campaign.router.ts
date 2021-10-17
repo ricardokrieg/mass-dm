@@ -17,7 +17,7 @@ router.post("/", async (req, res, _next) => {
     if (error instanceof MissingParamError) {
       res
         .status(422)
-        .json({ error })
+        .json({ error: error.message })
       return
     } else {
       throw error
@@ -53,7 +53,7 @@ router.get("/:uuid", async (req, res, _next) => {
     if (error instanceof NotFoundError) {
       res
         .status(404)
-        .json({ error })
+        .json({ error: error.message })
       return
     } else {
       throw error
@@ -78,7 +78,7 @@ router.patch("/:uuid", async (req, res, _next) => {
     if (error instanceof NotFoundError) {
       res
         .status(404)
-        .json({ error })
+        .json({ error: error.message })
       return
     } else {
       throw error

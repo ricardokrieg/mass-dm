@@ -80,8 +80,6 @@ describe('Campaign integration test', () => {
             timestamp: response.body.data.timestamp,
           }
 
-          debug(response.body.data)
-
           expect(response.type).toBe('application/json')
           expect(response.body.data).toEqual(expectedData)
 
@@ -98,7 +96,7 @@ describe('Campaign integration test', () => {
         })
         .expect(422)
         .then((response) => {
-          debug(response.body)
+          expect(response.body.error).toEqual('message spintax is required')
         })
     })
   })
@@ -169,6 +167,9 @@ describe('Campaign integration test', () => {
         .get(otherUrl)
         .auth(auth.access_token, { type: 'bearer' })
         .expect(404)
+        .then((response) => {
+          expect(response.body.error).toEqual('Campaign not found')
+        })
     })
   })
 
@@ -218,6 +219,9 @@ describe('Campaign integration test', () => {
           title: newTitle,
         })
         .expect(404)
+        .then((response) => {
+          expect(response.body.error).toEqual('Campaign not found')
+        })
     })
   })
 })
