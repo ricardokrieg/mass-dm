@@ -11,13 +11,14 @@ export class CampaignsRoutes extends CommonRoutesConfig {
 
   configureRoutes(): express.Application {
     this.app.route(`/campaigns`)
-      .get(CampaignsController.list)
+      .get(CampaignsController.all)
       .post(
         CampaignsMiddleware.validateCreate,
         CampaignsController.create
       )
 
-    this.app.route(`/campaigns/:uuid`)
+    this.app.route(`/campaigns/:id`)
+      .all(CampaignsMiddleware.validateCampaignExists)
       .get(CampaignsController.get)
       .patch(
         CampaignsMiddleware.validateUpdate,

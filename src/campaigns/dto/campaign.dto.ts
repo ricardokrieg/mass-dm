@@ -1,5 +1,5 @@
 export interface CampaignDto {
-  uuid: string
+  id: string
   userId: string
   title: string
 }

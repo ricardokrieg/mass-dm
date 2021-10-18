@@ -2,15 +2,15 @@ import express from 'express'
 import debug from 'debug'
 
 import CampaignsService from '../services/campaigns.service'
-import {CampaignNotFoundError} from '../campaigns.errors'
 
 const log: debug.IDebugger = debug('app:controller:campaigns')
 
 class CampaignsController {
-  async list(req: express.Request, res: express.Response) {
+  async all(req: express.Request, res: express.Response) {
     // @ts-ignore
     const user = req.user
-    const campaigns = await CampaignsService.list(user.sub, 100, 0)
+    const campaigns = await CampaignsService.userCampaigns(user.sub)
+
     res
       .status(200)
       .send({
@@ -21,34 +21,25 @@ class CampaignsController {
   async get(req: express.Request, res: express.Response) {
     // @ts-ignore
     const user = req.user
+    const campaign = await CampaignsService.userCampaign(user.sub, req.params.id)
 
-    const campaign = await CampaignsService.get(user.sub, req.params.uuid)
-
-    if (campaign === undefined) {
-      res
-        .status(404)
-        .send({
-          error: `Campaign not found`
-        })
-    } else {
-      res
-        .status(200)
-        .send({
-          data: campaign
-        })
-    }
+    res
+      .status(200)
+      .send({
+        data: campaign
+      })
   }
 
   async create(req: express.Request, res: express.Response) {
     // @ts-ignore
     const user = req.user
 
-    const campaign = await CampaignsService.create({ userId: user.sub, ...req.body })
+    const id = await CampaignsService.create({ userId: user.sub, ...req.body })
 
     res
       .status(201)
       .send({
-        data: { uuid: campaign.uuid }
+        data: { id }
       })
   }
 
@@ -56,21 +47,7 @@ class CampaignsController {
     // @ts-ignore
     const user = req.user
 
-    try {
-      await CampaignsService.update(user.sub, req.body.uuid, req.body)
-    } catch (error) {
-      if (error instanceof CampaignNotFoundError) {
-        res
-          .status(404)
-          .send({
-            error: `Campaign not found`
-          })
-
-        return
-      } else {
-        throw error
-      }
-    }
+    await CampaignsService.update(user.sub, req.params.id, req.body)
 
     res
       .status(204)
@@ -81,21 +58,7 @@ class CampaignsController {
     // @ts-ignore
     const user = req.user
 
-    try {
-      await CampaignsService.delete(user.sub, req.params.uuid)
-    } catch (error) {
-      if (error instanceof CampaignNotFoundError) {
-        res
-          .status(404)
-          .send({
-            error: `Campaign not found`
-          })
-
-        return
-      } else {
-        throw error
-      }
-    }
+    await CampaignsService.delete(user.sub, req.params.id)
 
     res
       .status(204)

@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon ./src/index.ts",
     "debug": "export DEBUG=* && yarn start",
-    "test": "jest"
+    "test": "ava --timeout 1m --verbose --serial src/**/*.test.ts",
+    "coverage": "nyc yarn test"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
@@ -15,6 +16,7 @@
     "@types/debug": "^4.1.7",
     "@types/jest": "^27.0.2",
     "@types/supertest": "^2.0.11",
+    "ava": "^3.15.0",
     "babel-jest": "^27.2.4",
     "jest": "^27.2.4",
     "nodemon": "^2.0.12",
@@ -38,17 +40,29 @@
     "express-session": "^1.17.2",
     "express-winston": "^4.2.0",
     "jwks-rsa": "^2.0.4",
+    "knex": "^0.95.11",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
+    "nyc": "^15.1.0",
+    "pg": "^8.7.1",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
-    "typescript": "^4.4.3",
+    "ts-node": "^10.3.0",
+    "typescript": "^4.4.4",
     "winston": "^3.3.3"
   },
   "jest": {
     "testEnvironment": "node",
     "coveragePathIgnorePatterns": [
       "/node_modules/"
+    ]
+  },
+  "ava": {
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
     ]
   }
 }

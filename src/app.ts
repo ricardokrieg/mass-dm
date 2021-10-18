@@ -7,7 +7,6 @@ import * as expressWinston from 'express-winston'
 import debug from 'debug'
 
 import {default as config} from './config'
-// import campaignRouter from './Campaign/Campaign.router'
 import {CampaignsRoutes} from './campaigns/campaigns.routes'
 import {CommonRoutesConfig} from './common/common.routes.config'
 
@@ -51,7 +50,5 @@ routes.push(new CampaignsRoutes(app))
 routes.forEach((route: CommonRoutesConfig) => {
   debugLog(`Routes configured for ${route.getName()}`)
 })
-
-// app.use("/api/v1/mass-dm/campaigns", campaignRouter)
 
 export default app

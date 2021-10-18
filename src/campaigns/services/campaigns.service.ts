@@ -1,27 +1,36 @@
+import { isEmpty } from 'lodash'
+
 import {CreateCampaignDto} from '../dto/create.campaign.dto'
 import {CampaignDto} from '../dto/campaign.dto'
 import CampaignsDao from '../daos/campaigns.dao'
-import {UpdateCampaignDto} from "../dto/update.campaign.dto";
+import {UpdateCampaignDto} from '../dto/update.campaign.dto'
+import {CampaignNotFoundError} from '../campaigns.errors'
 
 class CampaignsService {
-  list(userId: string, limit: number, page: number): Promise<Array<CampaignDto>> {
-    return CampaignsDao.getCampaigns(userId)
+  async userCampaigns(userId: string): Promise<Array<CampaignDto>> {
+    return CampaignsDao.find({ user_id: userId })
   }
 
-  get(userId: string, uuid: string): Promise<CampaignDto | undefined> {
-    return CampaignsDao.getCampaignByUuid(userId, uuid)
+  async userCampaign(userId: string, id: string): Promise<CampaignDto> {
+    const campaigns = await CampaignsDao.find({ id, user_id: userId }, 1)
+
+    if (isEmpty(campaigns)) {
+      throw new CampaignNotFoundError()
+    }
+
+    return campaigns[0]
   }
 
-  create(resource: CreateCampaignDto): Promise<CampaignDto> {
-    return CampaignsDao.addCampaign(resource)
+  async create(campaign: CreateCampaignDto): Promise<string> {
+    return CampaignsDao.create(campaign)
   }
 
-  update(userId: string, uuid: string, resource: UpdateCampaignDto): Promise<CampaignDto | undefined> {
-    return CampaignsDao.updateCampaignByUuid(userId, uuid, resource)
+  async update(userId: string, id: string, campaign: UpdateCampaignDto): Promise<void> {
+    return CampaignsDao.update({ id, user_id: userId }, campaign)
   }
 
-  delete(userId: string, uuid: string): Promise<void> {
-    return CampaignsDao.deleteCampaignByUuid(userId, uuid)
+  async delete(userId: string, id: string): Promise<void> {
+    return CampaignsDao.delete({ id, user_id: userId })
   }
 }
 

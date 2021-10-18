@@ -1,13 +1,15 @@
 import debug from 'debug'
-import {find, findIndex, filter} from 'lodash'
-const chance = require('chance').Chance()
+import {map} from 'lodash'
 
 import {CreateCampaignDto} from '../dto/create.campaign.dto'
 import {CampaignDto} from '../dto/campaign.dto'
 import {UpdateCampaignDto} from '../dto/update.campaign.dto'
-import {CampaignNotFoundError} from "../campaigns.errors";
+import CampaignsMapper from '../campaigns.mapper'
+import database from '../../database'
 
 const log: debug.IDebugger = debug('app:daos:campaigns')
+
+const tableName = 'campaigns'
 
 class CampaignsDao {
   campaigns: Array<CampaignDto> = []
@@ -16,52 +18,45 @@ class CampaignsDao {
     log(`Created new instance of CampaignsDao`)
   }
 
-  async addCampaign(createCampaign: CreateCampaignDto): Promise<CampaignDto> {
-    const campaign: CampaignDto = {
-      uuid: chance.guid(),
-      ...createCampaign,
+  async find(query: any, limit?: number): Promise<Array<CampaignDto>> {
+    log(`Finding Campaigns:`, query, limit)
+
+    let campaigns
+    if (limit !== undefined) {
+      campaigns = await database(tableName).where(query).limit(limit!)
+    } else {
+      campaigns = await database(tableName).where(query)
     }
 
-    this.campaigns.push(campaign)
-
-    return campaign
+    return map(
+      campaigns,
+      CampaignsMapper.databaseToDto
+    )
   }
 
-  async getCampaigns(): Promise<Array<CampaignDto>> {
-    return this.campaigns
+  async create(campaign: CreateCampaignDto): Promise<string> {
+    log(`Creating Campaign:`, campaign)
+
+    const ids = await database(tableName).insert(
+      CampaignsMapper.createDtoToDatabase(campaign),
+      'id'
+    )
+
+    log(`Campaign created successfully: ${ids[0]}`)
+
+    return ids[0]
   }
 
-  async getCampaignByUuid(uuid: string): Promise<CampaignDto | undefined> {
-    return find(this.campaigns, { uuid })
+  async update(query: any, campaign: UpdateCampaignDto): Promise<void> {
+    log(`Updating Campaigns:`, query, campaign)
+
+    await database(tableName).where(query).update(campaign)
   }
 
-  async updateCampaign(oldCampaign: CampaignDto, newCampaign: UpdateCampaignDto): Promise<CampaignDto> {
-    const campaignIndex = findIndex(this.campaigns, { uuid: oldCampaign.uuid })
-    if (campaignIndex < 0) {
-      return
-    }
+  async delete(query: any): Promise<void> {
+    log(`Deleting Campaigns:`, query)
 
-    const campaign = {
-      ...oldCampaign,
-      ...newCampaign,
-    }
-
-    this.campaigns.splice(campaignIndex, 1, campaign)
-
-    return campaign
-  }
-
-  async deleteCampaignByUuid(userId: string, uuid: string): Promise<void> {
-    const campaignIndex = findIndex(this.campaigns, { userId, uuid })
-    if (campaignIndex < 0) {
-      throw new CampaignNotFoundError()
-    }
-
-    this.campaigns.splice(campaignIndex, 1)
-  }
-
-  async deleteAll(): Promise<void> {
-    this.campaigns.splice(0)
+    await database(tableName).where(query).del()
   }
 }
 
