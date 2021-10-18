@@ -1,6 +1,6 @@
 import express from 'express'
 import debug from 'debug'
-import {isEmpty, get} from 'lodash'
+import {isEmpty, get, set} from 'lodash'
 
 import CampaignsService from '../services/campaigns.service'
 import {CampaignNotFoundError} from '../campaigns.errors'
@@ -32,7 +32,9 @@ class CampaignsMiddleware {
 
       log(`validateCampaignExists`, user.sub, req.params.id)
 
-      await CampaignsService.userCampaign(user.sub, req.params.id)
+      const campaign = await CampaignsService.userCampaign(user.sub, req.params.id)
+      set(req, 'campaign', campaign)
+
       next()
     } catch (error) {
       if (error instanceof CampaignNotFoundError) {

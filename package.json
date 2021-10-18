@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon ./src/index.ts",
     "debug": "export DEBUG=* && yarn start",
-    "test": "ava --timeout 1m --verbose --serial src/**/*.test.ts",
+    "test": "ava --timeout 1m --verbose --serial",
     "coverage": "nyc yarn test"
   },
   "devDependencies": {

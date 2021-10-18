@@ -20,8 +20,7 @@ class CampaignsController {
 
   async get(req: express.Request, res: express.Response) {
     // @ts-ignore
-    const user = req.user
-    const campaign = await CampaignsService.userCampaign(user.sub, req.params.id)
+    const campaign = req.campaign
 
     res
       .status(200)
