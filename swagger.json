@@ -1,0 +1,122 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "",
+    "version": "1.0.0",
+    "title": "",
+    "termsOfService": "",
+    "contact": {
+      "email": ""
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "localhost",
+  "basePath": "",
+  "tags": [
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/campaigns": {
+      "post": {
+        "tags": [
+        ],
+        "summary": "",
+        "description": "",
+        "operationId": "addCampaign",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Campaign"
+            }
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/campaigns/{id}": {
+      "get": {
+        "summary": "",
+        "description": "",
+        "operationId": "getCampaign",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/CampaignResponse"
+            }
+          },
+          "404": {
+            "description": "Campaign not found"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Campaign": {
+      "type": "object",
+      "required": [
+        "id",
+        "userId",
+        "title"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "CampaignResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/Campaign"
+        },
+        "error": {
+          "type": "string"
+        },
+        "meta": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}
