@@ -25,7 +25,7 @@ test.serial('fails with error code 401 without access token', async t => {
   t.is(res.status, 401)
 })
 
-test.serial('fails with error code 400 when trying to create campaign without title', async t => {
+test.serial('fails with error code 405 when trying to create campaign without title', async t => {
   const res = await request(app)
     .post(`/campaigns`)
     .auth(auth.access_token, { type: 'bearer' })
@@ -33,8 +33,20 @@ test.serial('fails with error code 400 when trying to create campaign without ti
       title: ''
     })
 
-  t.is(res.status, 400)
-  t.is(res.body.error, `Missing param: title`)
+  t.is(res.status, 405)
+  t.is(res.body.error, `Title should NOT be shorter than 1 characters`)
+})
+
+test.serial('fails with error code 405 when trying to create campaign with invalid input', async t => {
+  const res = await request(app)
+    .post(`/campaigns`)
+    .auth(auth.access_token, { type: 'bearer' })
+    .send({
+      foo: 'bar'
+    })
+
+  t.is(res.status, 405)
+  t.is(res.body.error, `should have required property \'title\'`)
 })
 
 test.serial('creates campaign', async t => {

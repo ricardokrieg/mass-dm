@@ -23,6 +23,27 @@
   ],
   "paths": {
     "/campaigns": {
+      "get": {
+        "tags": [
+        ],
+        "summary": "",
+        "description": "",
+        "operationId": "listCampaigns",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/CampaignsResponse"
+            }
+          }
+        }
+      },
       "post": {
         "tags": [
         ],
@@ -42,11 +63,17 @@
             "description": "",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/Campaign"
+              "$ref": "#/definitions/CreateCampaign"
             }
           }
         ],
         "responses": {
+          "201": {
+            "description": "Campaign Created",
+            "schema": {
+              "$ref": "#/definitions/CampaignIDResponse"
+            }
+          },
           "405": {
             "description": "Invalid input"
           }
@@ -72,10 +99,72 @@
         ],
         "responses": {
           "200": {
-            "description": "successful operation",
+            "description": "OK",
             "schema": {
               "$ref": "#/definitions/CampaignResponse"
             }
+          },
+          "404": {
+            "description": "Campaign not found"
+          }
+        }
+      },
+      "patch": {
+        "summary": "",
+        "description": "",
+        "operationId": "updateCampaign",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UpdateCampaign"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Campaign not found"
+          },
+          "405": {
+            "description": "Invalid input"
+          }
+        }
+      },
+      "delete": {
+        "summary": "",
+        "description": "",
+        "operationId": "deleteCampaign",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "OK"
           },
           "404": {
             "description": "Campaign not found"
@@ -115,6 +204,69 @@
         },
         "meta": {
           "type": "object"
+        }
+      }
+    },
+    "CampaignsResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Campaign"
+          }
+        },
+        "error": {
+          "type": "string"
+        },
+        "meta": {
+          "type": "object"
+        }
+      }
+    },
+    "CampaignIDResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          }
+        },
+        "error": {
+          "type": "string"
+        },
+        "meta": {
+          "type": "object"
+        }
+      }
+    },
+    "CreateCampaign": {
+      "type": "object",
+      "required": [
+        "title"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "UpdateCampaign": {
+      "type": "object",
+      "required": [
+        "title"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
         }
       }
     }

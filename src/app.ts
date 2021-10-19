@@ -7,6 +7,7 @@ import * as expressWinston from 'express-winston'
 import debug from 'debug'
 const validator = require('swagger-express-validator')
 import util from 'util'
+import {capitalize} from 'lodash'
 
 import {default as config} from './config'
 import {CampaignsRoutes} from './campaigns/campaigns.routes'
@@ -51,9 +52,11 @@ const swaggerValidatorOpts = {
   validateResponse: true,
   requestValidationFn: (req: any, data: any, errors: any) => {
     console.log(`failed request validation: ${req.method} ${req.originalUrl}\n ${util.inspect(errors)}`)
+    throw errors[0]
   },
   responseValidationFn: (req: any, data: any, errors: any) => {
     console.log(`failed response validation: ${req.method} ${req.originalUrl}\n ${util.inspect(errors)}`)
+    throw errors[0]
   },
 }
 
@@ -67,11 +70,15 @@ app.use(validator(swaggerValidatorOpts))
 
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
   if (err instanceof UnauthorizedError) {
-    res.status(401)
-    res.json({ error: `Unauthorized` })
+    res.status(401).json({ error: `Unauthorized` })
+  } else if (err.keyword && err.schemaPath) {
+    // swagger validation error
+    let errorMessage = err.dataPath.startsWith('.') ? capitalize(err.dataPath.slice(1)) + ' ' : ''
+    errorMessage += err.message
+
+    res.status(405).json({ error: errorMessage })
   } else {
-    res.status(500)
-    res.json(err)
+    res.status(500).json(err)
   }
 })
 

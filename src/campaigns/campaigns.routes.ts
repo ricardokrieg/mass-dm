@@ -13,7 +13,6 @@ export class CampaignsRoutes extends CommonRoutesConfig {
     this.app.route(`/campaigns`)
       .get(CampaignsController.all)
       .post(
-        CampaignsMiddleware.validateCreate,
         CampaignsController.create
       )
 
@@ -21,7 +20,6 @@ export class CampaignsRoutes extends CommonRoutesConfig {
       .all(CampaignsMiddleware.validateCampaignExists)
       .get(CampaignsController.get)
       .patch(
-        CampaignsMiddleware.validateUpdate,
         CampaignsController.update
       )
       .delete(CampaignsController.delete)
