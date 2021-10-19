@@ -50,7 +50,9 @@ class CampaignsDao {
   async update(query: any, campaign: UpdateCampaignDto): Promise<void> {
     log(`Updating Campaigns:`, query, campaign)
 
-    await database(tableName).where(query).update(campaign)
+    await database(tableName)
+      .where(query)
+      .update(CampaignsMapper.updateDtoToDatabase(campaign))
   }
 
   async delete(query: any): Promise<void> {
