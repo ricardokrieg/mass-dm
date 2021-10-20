@@ -1,5 +1,6 @@
 import request from 'supertest'
 import test from 'ava'
+import {pick} from 'lodash'
 
 import app from '../../app'
 import CampaignsDao from '../daos/campaigns.dao'
@@ -48,6 +49,6 @@ test.serial('returns user campaigns', async t => {
 
   t.is(res.status, 200)
   t.is(res.body.data.length, 2)
-  t.deepEqual(res.body.data[0], campaigns[0])
-  t.deepEqual(res.body.data[1], campaigns[1])
+  t.deepEqual(res.body.data[0], pick(campaigns[0], ['id', 'title']))
+  t.deepEqual(res.body.data[1], pick(campaigns[1], ['id', 'title']))
 })

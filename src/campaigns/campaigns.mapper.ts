@@ -23,6 +23,13 @@ class CampaignsMapper {
       title: row['title'],
     }
   }
+
+  dtoToJson(campaign: CampaignDto): any {
+    return {
+      id: campaign.id,
+      title: campaign.title,
+    }
+  }
 }
 
 export default new CampaignsMapper()

@@ -1,6 +1,7 @@
 import request from 'supertest'
 import test from 'ava'
 const chance = require('chance').Chance()
+import {pick} from 'lodash'
 
 import app from '../../app'
 import CampaignsDao from '../daos/campaigns.dao'
@@ -62,5 +63,5 @@ test.serial('returns given campaign', async t => {
     .auth(auth.access_token, { type: 'bearer' })
 
   t.is(res.status, 200)
-  t.deepEqual(res.body.data, campaigns[0])
+  t.deepEqual(res.body.data, pick(campaigns[0], ['id', 'title']))
 })

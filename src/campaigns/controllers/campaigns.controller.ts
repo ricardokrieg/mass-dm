@@ -1,7 +1,9 @@
 import express from 'express'
 import debug from 'debug'
+import {map} from 'lodash'
 
 import CampaignsService from '../services/campaigns.service'
+import CampaignsMapper from '../campaigns.mapper'
 
 const log: debug.IDebugger = debug('app:controller:campaigns')
 
@@ -14,7 +16,7 @@ class CampaignsController {
     res
       .status(200)
       .send({
-        data: campaigns
+        data: map(campaigns, CampaignsMapper.dtoToJson)
       })
   }
 
@@ -25,7 +27,7 @@ class CampaignsController {
     res
       .status(200)
       .send({
-        data: campaign
+        data: CampaignsMapper.dtoToJson(campaign)
       })
   }
 
