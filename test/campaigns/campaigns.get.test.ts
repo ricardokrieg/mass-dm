@@ -1,12 +1,13 @@
+// @ts-ignore
 import request from 'supertest'
 import test from 'ava'
 const chance = require('chance').Chance()
 import {pick} from 'lodash'
 
-import app from '../../app'
-import CampaignsDao from '../daos/campaigns.dao'
-import {CampaignDto} from '../dto/campaign.dto'
-import {getAccessToken, AccessToken} from '../../common/common.test.config'
+import app from '../../src/app'
+import CampaignsDao from '../../src/campaigns/daos/campaigns.dao'
+import {CampaignDto} from '../../src/campaigns/dto/campaign.dto'
+import {getAccessToken, AccessToken} from '../../src/common/common.test.config'
 
 let auth: AccessToken
 
