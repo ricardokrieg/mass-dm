@@ -1,4 +1,3 @@
-import {default as config} from './config'
-const connection = require('../knexfile')[config.env]
+const connection = require('../knexfile')[process.env.NODE_ENV || 'development']
 
 export default require('knex')(connection)

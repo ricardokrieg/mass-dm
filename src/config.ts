@@ -13,13 +13,11 @@ interface IConfigAuth0 {
 }
 
 interface IConfig {
-  env: string
   port: number
   auth0: IConfigAuth0
 }
 
 const config: IConfig = {
-  env: process.env.NODE_ENV || 'development',
   port: parseInt(process.env.PORT || '3001'),
   auth0: {
     domain: process.env.AUTH0_DOMAIN || '',
