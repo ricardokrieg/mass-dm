@@ -9,6 +9,9 @@
     "test": "ava --timeout 1m --verbose --serial",
     "coverage": "nyc yarn test"
   },
+  "engines": {
+    "node": "14.x"
+  },
   "devDependencies": {
     "@babel/core": "^7.15.8",
     "@babel/preset-env": "^7.15.8",
