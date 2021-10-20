@@ -12,15 +12,10 @@ interface IConfigAuth0 {
   test_refresh_token: string
 }
 
-interface IConfigTables {
-  campaigns: string
-}
-
 interface IConfig {
   env: string
   port: number
   auth0: IConfigAuth0
-  tables: IConfigTables
 }
 
 const config: IConfig = {
@@ -32,9 +27,6 @@ const config: IConfig = {
     client_id: process.env.AUTH0_CLIENT_ID || '',
     client_secret: process.env.AUTH0_CLIENT_SECRET || '',
     test_refresh_token: process.env.AUTH0_TEST_REFRESH_TOKEN || '',
-  },
-  tables: {
-    campaigns: process.env.CAMPAIGNS_TABLE || '',
   },
 }
 
