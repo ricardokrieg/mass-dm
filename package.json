@@ -7,7 +7,9 @@
     "start": "nodemon ./src/index.ts",
     "debug": "export DEBUG=* && yarn start",
     "test": "ava --timeout 1m --verbose --serial",
-    "coverage": "nyc yarn test"
+    "coverage": "nyc yarn test",
+    "tsc": "tsc",
+    "postinstall": "yarn tsc"
   },
   "engines": {
     "node": "14.x"
