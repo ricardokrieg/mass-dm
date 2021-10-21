@@ -1,14 +1,24 @@
 import express from 'express'
 import debug from 'debug'
-import {set, isEmpty} from 'lodash'
+import {set} from 'lodash'
 
 import CampaignsService from '../services/campaigns.service'
 import {CampaignNotFoundError} from '../campaigns.errors'
 
 const log: debug.IDebugger = debug("app:middleware:campaigns")
 
+const isValidUuid = (id: string): boolean => {
+  const regexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi
+  return regexExp.test(id)
+}
+
 class CampaignsMiddleware {
   async validateCampaignExists(req: express.Request, res: express.Response, next: express.NextFunction) {
+    if (!isValidUuid(req.params.id)) {
+      res.status(404).send({ error: `Campaign not found` })
+      return
+    }
+
     try {
       // @ts-ignore
       const user = req.user
@@ -23,7 +33,8 @@ class CampaignsMiddleware {
       if (error instanceof CampaignNotFoundError) {
         res.status(404).send({ error: `Campaign not found` })
       } else {
-        throw error
+        console.error(error)
+        res.status(500).send({ error: `Internal server error` })
       }
     }
   }

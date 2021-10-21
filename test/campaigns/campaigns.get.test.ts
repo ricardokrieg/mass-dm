@@ -58,6 +58,15 @@ test.serial('fails with error code 404 when trying to access nonexistent campaig
   t.is(res.body.error, `Campaign not found`)
 })
 
+test.serial.only('fails with error code 404 when passing invalid id with invalid format', async t => {
+  const res = await request(app)
+    .get(`/campaigns/invalid`)
+    .auth(auth.access_token, { type: 'bearer' })
+
+  t.is(res.status, 404)
+  t.is(res.body.error, `Campaign not found`)
+})
+
 test.serial('returns given campaign', async t => {
   const res = await request(app)
     .get(`/campaigns/${campaigns[0].id}`)

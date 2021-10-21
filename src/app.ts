@@ -78,7 +78,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 
     res.status(405).json({ error: errorMessage })
   } else {
-    res.status(500).json(err)
+    res.status(500).json({ error: err.message })
   }
 })
 
