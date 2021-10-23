@@ -7,23 +7,22 @@ import app from '../../src/app'
 import CampaignsDao from '../../src/campaigns/daos/campaigns.dao'
 import CampaignsService from '../../src/campaigns/services/campaigns.service'
 import {CampaignDto} from '../../src/campaigns/dto/campaign.dto'
-import {getAccessToken, AccessToken} from '../../src/common/common.test.config'
+import {getAuthorization, Authorization} from '../../src/common/common.test.config'
 
-let auth: AccessToken
-const userId = 'auth0|61642dacfe39bb0069231886'
+let auth: Authorization
 const otherUserId = 'test|61642dacfe39bb0069231886'
 
 const title = 'Test Campaign'
 let campaigns: Array<CampaignDto> = []
 
 test.before(async () => {
-  auth = await getAccessToken()
+  auth = await getAuthorization()
 
   await CampaignsDao.delete({})
   let id;
 
-  id = await CampaignsDao.create({ userId, title })
-  campaigns.push({ id, userId, title })
+  id = await CampaignsDao.create({ userId: auth.userId, title })
+  campaigns.push({ id, userId: auth.userId, title })
 
   id = await CampaignsDao.create({ userId: otherUserId, title })
   campaigns.push({ id, userId: otherUserId, title })
@@ -43,7 +42,7 @@ test.serial('fails with error code 401 without access token', async t => {
 test.serial('fails with error code 404 when trying to update campaign from other user', async t => {
   const res = await request(app)
     .patch(`/campaigns/${campaigns[1].id}`)
-    .auth(auth.access_token, { type: 'bearer' })
+    .auth(auth.token.access_token, { type: 'bearer' })
     .send({
       title
     })
@@ -55,7 +54,7 @@ test.serial('fails with error code 404 when trying to update campaign from other
 test.serial('fails with error code 404 when trying to update a nonexistent campaign', async t => {
   const res = await request(app)
     .patch(`/campaigns/${chance.guid()}`)
-    .auth(auth.access_token, { type: 'bearer' })
+    .auth(auth.token.access_token, { type: 'bearer' })
     .send({
       title
     })
@@ -67,7 +66,7 @@ test.serial('fails with error code 404 when trying to update a nonexistent campa
 test.serial('fails with error code 405 when trying to update campaign without title', async t => {
   const res = await request(app)
     .patch(`/campaigns/${campaigns[0].id}`)
-    .auth(auth.access_token, { type: 'bearer' })
+    .auth(auth.token.access_token, { type: 'bearer' })
     .send({
       title: ''
     })
@@ -79,7 +78,7 @@ test.serial('fails with error code 405 when trying to update campaign without ti
 test.serial('fails with error code 405 when trying to update campaign with invalid input', async t => {
   const res = await request(app)
     .patch(`/campaigns/${campaigns[0].id}`)
-    .auth(auth.access_token, { type: 'bearer' })
+    .auth(auth.token.access_token, { type: 'bearer' })
     .send({
       foo: 'bar'
     })
@@ -91,14 +90,14 @@ test.serial('fails with error code 405 when trying to update campaign with inval
 test.serial('updates given campaign', async t => {
   const res = await request(app)
     .patch(`/campaigns/${campaigns[0].id}`)
-    .auth(auth.access_token, { type: 'bearer' })
+    .auth(auth.token.access_token, { type: 'bearer' })
     .send({
       title: `New title`
     })
 
   t.is(res.status, 204)
 
-  const campaign = await CampaignsService.userCampaign(userId, campaigns[0].id)
+  const campaign = await CampaignsService.userCampaign(auth.userId, campaigns[0].id)
 
   t.is(campaign.title, `New title`)
 })

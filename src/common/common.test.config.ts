@@ -2,11 +2,26 @@ import request from 'request-promise'
 
 import config from '../config'
 
+export interface Authorization {
+  userId: string
+  token: AccessToken
+}
+
 export interface AccessToken {
   access_token: string
   scope: string
   expires_in: number
   token_type: string
+}
+
+export const getAuthorization = async (): Promise<Authorization> => {
+  const userId = 'auth0|61642dacfe39bb0069231886'
+  const token = await getAccessToken()
+
+  return {
+    userId,
+    token,
+  }
 }
 
 export const getAccessToken = async (): Promise<AccessToken> => {

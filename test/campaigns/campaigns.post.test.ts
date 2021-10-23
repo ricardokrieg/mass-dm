@@ -5,15 +5,14 @@ import test from 'ava'
 import app from '../../src/app'
 import CampaignsDao from '../../src/campaigns/daos/campaigns.dao'
 import CampaignsService from '../../src/campaigns/services/campaigns.service'
-import {getAccessToken, AccessToken} from '../../src/common/common.test.config'
+import {getAuthorization, Authorization} from '../../src/common/common.test.config'
 
-let auth: AccessToken
-const userId = 'auth0|61642dacfe39bb0069231886'
+let auth: Authorization
 
 const title = 'Test Campaign'
 
 test.before(async () => {
-  auth = await getAccessToken()
+  auth = await getAuthorization()
 
   await CampaignsDao.delete({})
 })
@@ -32,7 +31,7 @@ test.serial('fails with error code 401 without access token', async t => {
 test.serial('fails with error code 405 when trying to create campaign without title', async t => {
   const res = await request(app)
     .post(`/campaigns`)
-    .auth(auth.access_token, { type: 'bearer' })
+    .auth(auth.token.access_token, { type: 'bearer' })
     .send({
       title: ''
     })
@@ -44,7 +43,7 @@ test.serial('fails with error code 405 when trying to create campaign without ti
 test.serial('fails with error code 405 when trying to create campaign with invalid input', async t => {
   const res = await request(app)
     .post(`/campaigns`)
-    .auth(auth.access_token, { type: 'bearer' })
+    .auth(auth.token.access_token, { type: 'bearer' })
     .send({
       foo: 'bar'
     })
@@ -56,16 +55,16 @@ test.serial('fails with error code 405 when trying to create campaign with inval
 test.serial('creates campaign', async t => {
   const res = await request(app)
     .post(`/campaigns`)
-    .auth(auth.access_token, { type: 'bearer' })
+    .auth(auth.token.access_token, { type: 'bearer' })
     .send({
       title
     })
 
   t.is(res.status, 201)
 
-  const campaigns = await CampaignsService.userCampaigns(userId)
+  const campaigns = await CampaignsService.userCampaigns(auth.userId)
 
   t.deepEqual(res.body.data, { id: campaigns[0].id })
-  t.is(campaigns[0].userId, userId)
+  t.is(campaigns[0].userId, auth.userId)
   t.is(campaigns[0].title, title)
 })
